@@ -1,78 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kingdoms of Eternity</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#171b20">
+<title>Kingdoms of Eternity — Castle Prototype</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#172c3b;color:white;font-family:Arial;text-align:center}
-header{padding:15px;background:#101b28;border-bottom:2px solid #d5ae65}
-h1{font-size:22px;color:#f3d28c;margin:5px}
-.resources{display:flex;justify-content:space-around;padding:12px 3px;background:#263b46}
-.resource{font-size:13px}
-.resource strong{display:block;color:#ffe09b;font-size:17px}
-.scene{height:65vh;min-height:350px;position:relative;overflow:hidden;background:linear-gradient(#80b5d0 0%,#c6d8c9 60%,#526e40 60%,#304c2c 100%)}
-.sun{position:absolute;right:12%;top:8%;width:55px;height:55px;border-radius:50%;background:#ffe9a2;box-shadow:0 0 40px #ffe9a2}
-.castle{position:absolute;left:50%;top:51%;transform:translate(-50%,-50%);width:260px;height:230px}
-.keep{position:absolute;left:65px;top:60px;width:130px;height:130px;background:#c8c1a9;border:4px solid #716c60;box-shadow:8px 8px 0 #777264}
-.tower{position:absolute;width:53px;height:155px;bottom:20px;background:#bcb5a0;border:4px solid #716c60}
-.tower.left{left:20px}
-.tower.right{right:20px}
-.roof{position:absolute;top:-38px;left:-7px;width:0;height:0;border-left:31px solid transparent;border-right:31px solid transparent;border-bottom:42px solid #843d35}
-.keep .roof{top:-55px;left:27px;border-left:40px solid transparent;border-right:40px solid transparent;border-bottom:60px solid #79382f}
-.door{position:absolute;bottom:0;left:50%;transform:translateX(-50%);height:53px;width:30px;background:#533626;border-radius:15px 15px 0 0;border:3px solid #e1bd75}
-.window{position:absolute;top:40px;width:15px;height:25px;background:#273f4c;border-radius:8px 8px 0 0;border:2px solid #e6d5a9}
-.w1{left:23px}.w2{right:23px}
-.flag{position:absolute;top:-15px;left:50%;height:30px;width:4px;background:#d7bd7c}
-.flag:after{content:"";position:absolute;left:4px;top:0;width:28px;height:17px;background:#9c3434;clip-path:polygon(0 0,100% 0,80% 50%,100% 100%,0 100%)}
-.path{position:absolute;bottom:-70px;left:50%;transform:translateX(-50%);width:90px;height:130px;background:#b8a17b;clip-path:polygon(25% 0,75% 0,100% 100%,0 100%)}
-.label{position:absolute;bottom:12px;width:100%;font-size:14px;text-shadow:0 2px 3px black}
-.panel{padding:18px;background:#172431}
-button{padding:14px 25px;background:#d6ad60;border:2px solid #f6dda1;border-radius:7px;color:#281b0b;font-size:16px;font-weight:bold}
-#status{margin:12px;color:#ffe0a0}
+:root{--gold:#e7c77b;--gold2:#9b7136;--panel:#171a1eeF;--line:#b28b4c;--text:#f4ead5}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101820;color:var(--text);font-family:Georgia,"Times New Roman",serif;touch-action:none}
+#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;outline:none}
+#vignette{position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(6,11,16,.7),transparent 24%,transparent 63%,rgba(4,8,12,.66));z-index:2}
+.hud{position:fixed;z-index:5;left:10px;right:10px;top:max(10px,env(safe-area-inset-top));display:flex;align-items:flex-start;gap:7px;pointer-events:none}
+.brand{background:linear-gradient(#34312aeb,#15191dec);border:1px solid #9e804b;border-radius:5px;padding:7px 10px;box-shadow:0 3px 12px #0008;min-width:112px}
+.brand small{display:block;font:9px Arial,sans-serif;letter-spacing:2px;color:#d8b970}.brand strong{font-size:15px;font-weight:normal;white-space:nowrap}
+.resources{margin-left:auto;display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.resource{background:#171b20eF;border:1px solid #78633d;border-radius:4px;padding:7px 8px;min-width:64px;box-shadow:0 3px 12px #0008;font:11px Arial,sans-serif;white-space:nowrap}
+.resource b{color:#f3d88f;font-size:12px;margin-left:3px}
+.topright{position:fixed;z-index:5;right:12px;top:82px;display:flex;flex-direction:column;gap:7px}
+.iconbtn{width:39px;height:39px;border:1px solid #9a7a43;background:linear-gradient(#36342eeb,#16191ded);color:#f1d796;border-radius:5px;font-size:19px;box-shadow:0 3px 10px #0008}
+.hint{position:fixed;z-index:4;bottom:calc(16px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#111820c9;border:1px solid #8c7348;border-radius:20px;padding:8px 13px;font:11px Arial,sans-serif;color:#e7d5ad;white-space:nowrap;box-shadow:0 3px 12px #0007;pointer-events:none}
+#panelShade{display:none;position:fixed;inset:0;z-index:9;background:#0008}
+#castlePanel{display:none;position:fixed;z-index:10;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(420px,calc(100vw - 24px));background:linear-gradient(145deg,#302a20f7,#12171df7 72%);border:1px solid #c4a260;border-radius:7px;box-shadow:0 12px 38px #000b;color:var(--text);overflow:hidden}
+.panelHead{padding:13px 15px 10px;border-bottom:1px solid #8b6c3e;background:linear-gradient(90deg,#52432d,#24221d)}
+.panelHead .eyebrow{font:9px Arial,sans-serif;letter-spacing:2px;color:#d5b873}.panelHead h2{font-weight:normal;margin:3px 0 0;font-size:22px}
+.close{float:right;border:0;background:transparent;color:#e9d6a7;font-size:24px;padding:0 2px}
+.panelBody{padding:12px 15px 14px;font:12px Arial,sans-serif;color:#d8d0c1}
+.levelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px}
+.level{font-size:12px;color:#d9bd79}.power{color:#bcb3a1}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0 13px}
+.stat{background:#080d12a8;border:1px solid #4d473b;border-radius:3px;padding:8px;text-align:center}.stat strong{display:block;color:#e8cd89;font-size:14px;margin-bottom:3px}.stat span{font-size:10px;color:#a9a18f}
+.upgrade{width:100%;border:1px solid #eed18c;border-radius:4px;padding:12px;background:linear-gradient(#a77d39,#68461f);color:#fff3d2;font:bold 13px Arial,sans-serif;letter-spacing:.4px;box-shadow:inset 0 1px #ffdf9d;cursor:pointer}
+.upgrade:disabled{opacity:.45}
+.cost{display:flex;justify-content:center;gap:15px;margin-top:8px;color:#d5c8a7;font-size:11px}
+#toast{position:fixed;z-index:15;top:42%;left:50%;transform:translate(-50%,-50%);background:#111820f2;border:1px solid #d0ac62;padding:11px 15px;border-radius:5px;display:none;font:13px Arial,sans-serif;box-shadow:0 8px 25px #0009}
+.loading{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse,#34434b,#101820 70%);font:14px Arial,sans-serif;letter-spacing:2px;color:#e8ce8e;transition:opacity .4s}
+.loading span{border-bottom:1px solid #9b804d;padding:12px}
+@media(max-width:390px){.brand{min-width:100px;padding:6px 7px}.brand strong{font-size:13px}.resource{min-width:57px;padding:6px 5px;font-size:10px}.resources{gap:4px}.resource b{font-size:11px}}
 </style>
 </head>
 <body>
-<header>
-<h1>♛ KINGDOMS OF ETERNITY</h1>
-<div>Lord of Dawn · Main Castle</div>
-</header>
-<div class="resources">
-<div class="resource">🌾<strong>10,000</strong>Food</div>
-<div class="resource">🪵<strong>10,000</strong>Wood</div>
-<div class="resource">🪨<strong>10,000</strong>Stone</div>
-<div class="resource">🪙<strong>5,000</strong>Gold</div>
+<div id="game"></div><div id="vignette"></div>
+<div class="hud">
+ <div class="brand"><small>KINGDOMS OF</small><strong>ETERNITY</strong></div>
+ <div class="resources">
+  <div class="resource">🪵 <b id="wood">12.4K</b></div>
+  <div class="resource">🪨 <b id="stone">8.2K</b></div>
+  <div class="resource">🪙 <b id="gold">5.6K</b></div>
+ </div>
 </div>
-<div class="scene">
-<div class="sun"></div>
-<div class="castle">
-<div class="path"></div>
-<div class="tower left"><div class="roof"></div><div class="window"></div></div>
-<div class="tower right"><div class="roof"></div><div class="window"></div></div>
-<div class="keep">
-<div class="roof"></div>
-<div class="flag"></div>
-<div class="window w1"></div><div class="window w2"></div>
-<div class="door"></div>
-</div>
-</div>
-<div class="label">YOUR KINGDOM · MAIN CASTLE</div>
-</div>
-<div class="panel">
-<h2>Main Castle — Level <span id="level">1</span></h2>
-<p>Upgrade your castle to strengthen your kingdom.</p>
-<button onclick="upgrade()">⬆ UPGRADE CASTLE</button>
-<div id="status">Next upgrade: 500 Food + 500 Wood</div>
-</div>
+<div class="topright"><button class="iconbtn" id="homeBtn" aria-label="Reset view">⌂</button><button class="iconbtn" id="zoomIn" aria-label="Zoom in">＋</button><button class="iconbtn" id="zoomOut" aria-label="Zoom out">−</button></div>
+<div class="hint" id="hint">Drag to look around · Pinch to zoom · Tap the castle</div>
+<div id="panelShade"></div>
+<section id="castlePanel" aria-label="Main Castle details">
+ <div class="panelHead"><button class="close" id="closePanel" aria-label="Close">×</button><div class="eyebrow">YOUR KEEP · CAPITAL DISTRICT</div><h2>Main Castle</h2></div>
+ <div class="panelBody">
+  <div class="levelrow"><span class="level" id="levelLabel">LEVEL 1</span><span class="power">Kingdom stronghold</span></div>
+  The heart of your realm. Upgrade the keep to unlock stronger defenses, new buildings, and greater command capacity.
+  <div class="stats"><div class="stat"><strong id="defense">1,200</strong><span>DEFENSE</span></div><div class="stat"><strong id="march">2,000</strong><span>MARCH SIZE</span></div><div class="stat"><strong id="power">850</strong><span>POWER</span></div></div>
+  <button class="upgrade" id="upgradeBtn">UPGRADE MAIN CASTLE</button>
+  <div class="cost"><span>🪵 <b id="woodCost">2,000</b></span><span>🪨 <b id="stoneCost">1,500</b></span><span>⏱ <b id="timeCost">2m</b></span></div>
+ </div>
+</section>
+<div id="toast"></div>
+<div class="loading" id="loading"><span>RAISING THE KINGDOM…</span></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
-let level=1;
-function upgrade(){
-level++;
-document.getElementById('level').textContent=level;
-document.getElementById('status').textContent=
-'Upgrade successful! Castle Level '+level;
-}
+(() => {
+ const loading=document.getElementById('loading');
+ if(!window.THREE){loading.innerHTML='<span>3D ENGINE DID NOT LOAD — CHECK INTERNET AND RELOAD</span>';return}
+ const THREE=window.THREE, host=document.getElementById('game');
+ const scene=new THREE.Scene(); scene.background=new THREE.Color(0x9daeb1); scene.fog=new THREE.Fog(0x9daeb1,45,115);
+ const camera=new THREE.PerspectiveCamera(37,innerWidth/innerHeight,.1,220);
+ camera.position.set(18,20,26);
+ const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+ renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.setSize(innerWidth,innerHeight);
+ renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+ renderer.outputColorSpace=THREE.SRGBColorSpace;
+ renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
+ host.appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xe1edf3,0x4b493b,2.0));
+ const sun=new THREE.DirectionalLight(0xffe2b1,3.0);sun.position.set(-18,32,16);sun.castShadow=true;
+ sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-35;sun.shadow.camera.right=35;sun.shadow.camera.top=35;sun.shadow.camera.bottom=-35;sun.shadow.bias=-0.00035;scene.add(sun);
+ const mat=(color,roughness=.9,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+ const stone=mat(0xaaa99b), stoneLight=mat(0xc5c1ae), stoneDark=mat(0x666b67), roof=mat(0x354b53), roofLight=mat(0x52656a), wood=mat(0x65442b), iron=mat(0x343a3c,.45,.45), grass=mat(0x56664b), grassLight=mat(0x71805a), dirt=mat(0x82755c), gold=mat(0xc7a052,.55,.3);
+ const ground=new THREE.Mesh(new THREE.PlaneGeometry(180,180),mat(0x65715a));ground.rotation.x=-Math.PI/2;ground.position.y=-.16;ground.receiveShadow=true;scene.add(ground);
+ // Terrain patch: uneven rolling ground and stone courtyard
+ const terrainGeo=new THREE.PlaneGeometry(100,100,55,55);terrainGeo.rotateX(-Math.PI/2);
+ const pos=terrainGeo.attributes.position;
+ for(let i=0;i<pos.count;i++){let x=pos.getX(i),z=pos.getZ(i);pos.setY(i,Math.sin(x*.18)*.22+Math.cos(z*.14)*.28+Math.sin((x+z)*.11)*.18);}
+ terrainGeo.computeVertexNormals();const terrain=new THREE.Mesh(terrainGeo,mat(0x6d795b));terrain.position.y=-.05;terrain.receiveShadow=true;scene.add(terrain);
+ function box(parent,x,y,z,w,h,d,material,opts={}){let m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y+h/2,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+ function cylinder(parent,x,y,z,rt,rb,h,material,segments=8){let m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,segments),material);m.position.set(x,y+h/2,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+ function roofCone(parent,x,y,z,r,h,material,segments=8){let m=new THREE.Mesh(new THREE.ConeGeometry(r,h,segments),material);m.position.set(x,y+h/2,z);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+ function gable(parent,x,y,z,w,h,d,material){let shape=new THREE.Shape();shape.moveTo(-w/2,0);shape.lineTo(w/2,0);shape.lineTo(0,h);shape.closePath();let geo=new THREE.ExtrudeGeometry(shape,{depth:d,bevelEnabled:false});let m=new THREE.Mesh(geo,material);m.position.set(x,y,z-d/2);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+ const world=new THREE.Group();scene.add(world);
+ // road and courtyard, worn stone blocks
+ const courtyard=new THREE.Mesh(new THREE.CircleGeometry(13,48),mat(0x999587));courtyard.rotation.x=-Math.PI/2;courtyard.position.set(0,.02,0);courtyard.receiveShadow=true;world.add(courtyard);
+ for(let i=0;i<120;i++){const a=Math.random()*Math.PI*2,r=5+Math.random()*7,x=Math.cos(a)*r,z=Math.sin(a)*r;const tile=box(world,x,.035,z,.55+Math.random()*.6,.035,.42+Math.random()*.4,i%3?stoneLight:stoneDark);tile.rotation.y=Math.random()*Math.PI;}
+ // outer curtain wall with crenellations
+ const wallR=9.1, wallH=3.0, wallT=.65;
+ box(world,0,.05,-wallR,18.4,wallH,wallT,stone);
+ box(world,0,.05,wallR,18.4,wallH,wallT,stone);
+ box(world,-wallR,.05,0,wallT,wallH,18.4,stone);
+ box(world,wallR,.05,0,wallT,wallH,18.4,stone);
+ // wall walk top ledge
+ box(world,0,2.72,-wallR,18.7,.28,.85,stoneLight);box(world,0,2.72,wallR,18.7,.28,.85,stoneLight);
+ box(world,-wallR,2.72,0,.85,.28,18.7,stoneLight);box(world,wallR,2.72,0,.85,.28,18.7,stoneLight);
+ for(let i=0;i<20;i++){let p=-8.7+i*.915;box(world,p,3.0,-wallR,.42,.55,.72,stoneLight);box(world,p,3.0,wallR,.42,.55,.72,stoneLight);box(world,-wallR,3.0,p,.72,.55,.42,stoneLight);box(world,wallR,3.0,p,.72,.55,.42,stoneLight)}
+ // gatehouse facing camera (positive z)
+ box(world,-1.4,.05,9.05,1.2,4.1,1.15,stoneLight);box(world,1.4,.05,9.05,1.2,4.1,1.15,stoneLight);
+ box(world,0,3.35,9.05,4.0,.8,1.25,stoneLight);
+ gable(world,-1.4,4.1,9.05,1.25,.7,1.3,stone);gable(world,1.4,4.1,9.05,1.25,.7,1.3,stone);
+ roofCone(world,-1.4,4.55,9.05,.9,1.9,roof,4);roofCone(world,1.4,4.55,9.05,.9,1.9,roof,4);
+ // arched gate opening, dark inset + timber doors
+ box(world,0,.05,9.6,1.7,2.7,.12,mat(0x201e19));
+ box(world,-.42,.05,9.48,.76,2.35,.15,wood);box(world,.42,.05,9.48,.76,2.35,.15,wood);
+ for(let y=.35;y<2.2;y+=.42){box(world,-.42,y,9.38,.76,.055,.05,iron);box(world,.42,y,9.38,.76,.055,.05,iron)}
+ // Main castle core, positioned centre
+ const castle=new THREE.Group();castle.position.set(0,0,-.3);world.add(castle);
+ // base plinth and keep body
+ box(castle,0,.08,0,7.1,.5,6.2,stoneDark);
+ box(castle,0,.55,0,6.4,5.0,5.5,stone);
+ box(castle,0,.75,2.79,4.5,4.55,.15,stoneLight);
+ // front facade masonry seams
+ for(let y=1.15;y<5.15;y+=.63){box(castle,0,y,2.89,6.2,.045,.035,stoneDark)}
+ for(let y=1.15;y<5.1;y+=.63){for(let x of [-2.7,-1.35,0,1.35,2.7])box(castle,x,y+.3,2.9,.04,.35,.04,stoneDark)}
+ // central gate and heavy doors
+ box(castle,0,.58,2.99,1.65,2.75,.12,mat(0x2b2924));
+ box(castle,-.4,.6,3.08,.72,2.25,.12,wood);box(castle,.4,.6,3.08,.72,2.25,.12,wood);
+ for(let y=.9;y<2.7;y+=.38){box(castle,0,y,3.16,1.48,.045,.04,iron)}
+ // windows dark inset + lit slits
+ for(let x of [-2.15,2.15])for(let y of [2.2,3.8]){box(castle,x,y,2.91,.38,.75,.06,stoneDark);box(castle,x,y,2.96,.15,.53,.035,mat(0x283b40));box(castle,x,y,2.99,.035,.55,.025,gold)}
+ // roof of main hall
+ const mainRoof=new THREE.Mesh(new THREE.ConeGeometry(4.8,2.7,4),roof);mainRoof.rotation.y=Math.PI/4;mainRoof.scale.set(1,1,0.9);mainRoof.position.set(0,6.55,0);mainRoof.castShadow=true;mainRoof.receiveShadow=true;castle.add(mainRoof);
+ // eaves
+ box(castle,0,5.4,0,7,.22,6.0,wood);
+ // corner towers on keep
+ const towers=[];
+ function tower(parent,x,z,scale=1,top=6.7){
+  const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);parent.add(g);
+  cylinder(g,0,.1,0,1.15,1.28,top,stoneLight,10);
+  cylinder(g,0,top,0,1.28,1.28,.28,stoneDark,10);
+  for(let i=0;i<10;i++){let a=i*Math.PI*2/10;box(g,Math.cos(a)*.92,top+.22,Math.sin(a)*.92,.32,.55,.32,stoneLight).rotation.y=-a;}
+  roofCone(g,0,top+.45,0,1.45,2.65,roof,8);
+  // roof bands
+  cylinder(g,0,top+.48,0,1.22,1.3,.16,roofLight,10);
+  // arrow slits
+  for(let i=0;i<8;i++){let a=i*Math.PI/4;let slit=box(g,Math.sin(a)*1.12,top*.45,Math.cos(a)*1.12,.09,.6,.07,stoneDark);slit.rotation.y=a;}
+  towers.push(g);return g;
+ }
+ tower(castle,-3.0,-2.45,.82,6.4);tower(castle,3.0,-2.45,.82,6.4);tower(castle,-3.0,2.45,.82,6.4);tower(castle,3.0,2.45,.82,6.4);
+ // banners on keep front
+ function banner(parent,x,y,z,color){cylinder(parent,x,y,z,.055,.065,1.1,iron,8);let cloth=new THREE.Mesh(new THREE.PlaneGeometry(.72,.95),mat(color,.85));cloth.position.set(x+.35,y+.65,z+.03);cloth.castShadow=true;parent.add(cloth);let tip=new THREE.Mesh(new THREE.ConeGeometry(.18,.3,3),mat(color));tip.position.set(x+.35,y+.17,z+.04);tip.rotation.z=Math.PI;parent.add(tip)}
+ banner(castle,-2.6,4.4,3.05,0x8b302d);banner(castle,2.3,4.4,3.05,0x8b302d);
+ // smaller buildings around courtyard
+ function house(x,z,s=1,kind=0){
+  const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(s);world.add(g);
+  box(g,0,.08,0,2.7,1.65,2.2,kind?stone:mat(0x9e947d));
+  for(let y=.5;y<1.6;y+=.45)box(g,0,y,1.12,2.5,.035,.035,stoneDark);
+  const r=new THREE.Mesh(new THREE.ConeGeometry(2.05,1.6,4),kind?mat(0x59423a):roof);r.rotation.y=Math.PI/4;r.position.y=2.3;r.castShadow=true;g.add(r);
+  box(g,0,.08,1.14,.55,1.0,.08,wood);
+  return g;
+ }
+ house(-6,-3,.9,1);house(6,-3,.85,0);house(-5.9,4.7,.72,0);house(5.8,4.5,.76,1);
+ // wells, crates, trees, rocks
+ cylinder(world,-5,.08,0,.65,.72,.55,stoneLight,12);cylinder(world,-5,.63,0,.49,.49,.07,mat(0x253d43),12);cylinder(world,-5,1.0,0,.06,.06,.85,wood,8);box(world,-5,1.38,0,1.4,.12,.16,wood);
+ function tree(x,z,s=1){let g=new THREE.Group();g.position.set(x,0,z);world.add(g);cylinder(g,0,.05,0,.18,.25,1.4,wood,7);for(let i=0;i<3;i++){let c=new THREE.Mesh(new THREE.ConeGeometry(.85-i*.13,1.5,7),i===1?grass:grassLight);c.position.y=1.1+i*.55;c.castShadow=true;c.receiveShadow=true;g.add(c)}g.scale.setScalar(s)}
+ for(const t of [[-14,-9,1.5],[-11,-14,1.2],[12,-10,1.5],[15,-3,1.2],[-14,6,1.5],[13,10,1.4],[-8,13,1.2],[7,14,1.2],[-18,0,1.4],[18,7,1.3],[2,-15,1.2]])tree(...t);
+ function rock(x,z,s){let m=new THREE.Mesh(new THREE.DodecahedronGeometry(s,0),mat(0x77796f));m.position.set(x,s*.45,z);m.scale.y=.6;m.castShadow=true;m.receiveShadow=true;world.add(m)}
+ for(const r of [[-12,-5,.8],[11,4,.7],[-9,9,.6],[9,-13,.7],[16,-8,.8]])rock(...r);
+ // far hills / pine silhouettes
+ for(let i=0;i<26;i++){let x=(Math.random()-.5)*95,z=-36-Math.random()*24,s=1.8+Math.random()*4;let h=new THREE.Mesh(new THREE.ConeGeometry(s,h=s*2.2,7),mat(i%2?0x66796b:0x78877b));h.position.set(x,s*.8,z);scene.add(h)}
+ // tiny flags and smoke
+ const flagMats=[mat(0x8c302c),mat(0xb18a45),mat(0x314f66)];
+ function littleFlag(x,z){cylinder(world,x,3.5,z,.035,.04,1.4,iron,6);let f=new THREE.Mesh(new THREE.PlaneGeometry(.48,.4),flagMats[Math.floor(Math.random()*3)]);f.position.set(x+.22,4.45,z);f.castShadow=true;world.add(f)}
+ [[-9,-9],[9,-9],[-9,9],[9,9]].forEach(p=>littleFlag(...p));
+ // camera orbit controls implemented locally to avoid module/CDN import issues
+ let target=new THREE.Vector3(0,2.2,0), spherical={radius:34,theta:.62,phi:1.0};
+ function applyCamera(){spherical.phi=Math.max(.48,Math.min(1.28,spherical.phi));spherical.radius=Math.max(15,Math.min(57,spherical.radius));camera.position.set(target.x+spherical.radius*Math.sin(spherical.phi)*Math.sin(spherical.theta),target.y+spherical.radius*Math.cos(spherical.phi),target.z+spherical.radius*Math.sin(spherical.phi)*Math.cos(spherical.theta));camera.lookAt(target)}
+ applyCamera();
+ let pointers=new Map(),last=null,pinchStart=0,dragged=false;
+ renderer.domElement.addEventListener('pointerdown',e=>{renderer.domElement.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});last={x:e.clientX,y:e.clientY};dragged=false;if(pointers.size===2){const a=[...pointers.values()];pinchStart=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)}});
+ renderer.domElement.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const old=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const a=[...pointers.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(pinchStart){spherical.radius*=pinchStart/d;applyCamera()}pinchStart=d;dragged=true;return}if(last){const dx=e.clientX-last.x,dy=e.clientY-last.y;if(Math.abs(dx)+Math.abs(dy)>3)dragged=true;spherical.theta-=dx*.006;spherical.phi+=dy*.0045;applyCamera()}last={x:e.clientX,y:e.clientY}});
+ function pointerEnd(e){pointers.delete(e.pointerId);if(pointers.size<2)pinchStart=0;if(!pointers.size)last=null}
+ renderer.domElement.addEventListener('pointerup',pointerEnd);renderer.domElement.addEventListener('pointercancel',pointerEnd);
+ renderer.domElement.addEventListener('wheel',e=>{spherical.radius*=e.deltaY>0?1.08:.92;applyCamera()},{passive:true});
+ document.getElementById('zoomIn').onclick=()=>{spherical.radius*=.86;applyCamera()};document.getElementById('zoomOut').onclick=()=>{spherical.radius*=1.16;applyCamera()};
+ document.getElementById('homeBtn').onclick=()=>{target.set(0,2.2,0);spherical={radius:34,theta:.62,phi:1.0};applyCamera()};
+ // clickable raycast buildings; select castle by tapping its actual 3D geometry
+ const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
+ renderer.domElement.addEventListener('click',e=>{if(dragged)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObject(castle,true);if(hits.length){openPanel()}});
+ // keyboard accessibility
+ renderer.domElement.tabIndex=0;renderer.domElement.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){openPanel()}});
+ let level=1,woodAmount=12400,stoneAmount=8200;
+ const panel=document.getElementById('castlePanel'),shade=document.getElementById('panelShade');
+ function openPanel(){panel.style.display='block';shade.style.display='block';document.getElementById('hint').style.display='none'}
+ function closePanel(){panel.style.display='none';shade.style.display='none';document.getElementById('hint').style.display='block'}
+ document.getElementById('closePanel').onclick=closePanel;shade.onclick=closePanel;
+ function fmt(n){return n.toLocaleString('en-US')}
+ function updatePanel(){document.getElementById('levelLabel').textContent='LEVEL '+level;document.getElementById('defense').textContent=fmt(1200+(level-1)*650);document.getElementById('march').textContent=fmt(2000+(level-1)*400);document.getElementById('power').textContent=fmt(850+(level-1)*520);document.getElementById('woodCost').textContent=fmt(2000*level);document.getElementById('stoneCost').textContent=fmt(1500*level);document.getElementById('timeCost').textContent=level<3?(level*2)+'m':(level*15)+'m';document.getElementById('upgradeBtn').textContent='UPGRADE MAIN CASTLE · LVL '+(level+1);document.getElementById('upgradeBtn').disabled=woodAmount<2000*level||stoneAmount<1500*level}
+ updatePanel();
+ let toastTimer;function toast(t){const el=document.getElementById('toast');el.textContent=t;el.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.display='none',2100)}
+ document.getElementById('upgradeBtn').onclick=()=>{const wc=2000*level,sc=1500*level;if(woodAmount<wc||stoneAmount<sc){toast('Not enough resources.');return}woodAmount-=wc;stoneAmount-=sc;level++;document.getElementById('wood').textContent=(woodAmount/1000).toFixed(1)+'K';document.getElementById('stone').textContent=(stoneAmount/1000).toFixed(1)+'K';updatePanel();toast('Main Castle upgraded to level '+level+'!');};
+ // Render loop, gentle daylight movement
+ function animate(){requestAnimationFrame(animate);renderer.render(scene,camera)}
+ animate();
+ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.setSize(innerWidth,innerHeight)});
+ setTimeout(()=>{loading.style.opacity='0';setTimeout(()=>loading.remove(),450)},350);
+})();
 </script>
 </body>
 </html>
