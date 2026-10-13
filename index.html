@@ -2,300 +2,77 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kingdoms of Eternity</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#111a20;color:#fff;font-family:Arial,sans-serif;overflow:hidden}
-#game{position:fixed;inset:0}
-#hud{position:absolute;top:0;left:0;width:100%;padding:12px;background:linear-gradient(#101aee00,#101aee00);pointer-events:none}
-.brand{font-size:20px;font-weight:bold;color:#f2d28b;text-shadow:0 2px 5px #000}
-.level{font-size:12px;margin-top:5px;color:#eee}
-.resources{display:flex;gap:6px;margin-top:12px;justify-content:space-between}
-.resource{background:#17222de8;border:1px solid #ad8a4e;border-radius:6px;padding:7px 5px;text-align:center;flex:1;font-size:12px}
-.resource b{display:block;color:#ffe0a0;font-size:14px;margin-bottom:3px}
-#hint{position:absolute;top:145px;width:100%;text-align:center;font-size:12px;color:#fff;text-shadow:0 2px 5px #000;pointer-events:none}
-#panel{display:none;position:absolute;bottom:20px;left:5%;width:90%;background:#17222df5;border:2px solid #c49b55;border-radius:12px;padding:16px;box-shadow:0 0 25px #000}
-#panel h2{margin:0 0 8px;color:#f5d18b}
-#panel p{font-size:14px;color:#ddd;line-height:1.5}
-button{width:100%;padding:13px;background:linear-gradient(#e6bf70,#a77531);color:#20170b;border:1px solid #ffe2a0;border-radius:7px;font-weight:bold;font-size:16px;margin-top:8px}
-#close{position:absolute;right:12px;top:10px;width:auto;padding:5px 12px;margin:0;background:#34404b;color:white;border:0}
-#message{font-size:12px;color:#f5d18b;margin-top:8px}
+body{margin:0;background:#172c3b;color:white;font-family:Arial;text-align:center}
+header{padding:15px;background:#101b28;border-bottom:2px solid #d5ae65}
+h1{font-size:22px;color:#f3d28c;margin:5px}
+.resources{display:flex;justify-content:space-around;padding:12px 3px;background:#263b46}
+.resource{font-size:13px}
+.resource strong{display:block;color:#ffe09b;font-size:17px}
+.scene{height:65vh;min-height:350px;position:relative;overflow:hidden;background:linear-gradient(#80b5d0 0%,#c6d8c9 60%,#526e40 60%,#304c2c 100%)}
+.sun{position:absolute;right:12%;top:8%;width:55px;height:55px;border-radius:50%;background:#ffe9a2;box-shadow:0 0 40px #ffe9a2}
+.castle{position:absolute;left:50%;top:51%;transform:translate(-50%,-50%);width:260px;height:230px}
+.keep{position:absolute;left:65px;top:60px;width:130px;height:130px;background:#c8c1a9;border:4px solid #716c60;box-shadow:8px 8px 0 #777264}
+.tower{position:absolute;width:53px;height:155px;bottom:20px;background:#bcb5a0;border:4px solid #716c60}
+.tower.left{left:20px}
+.tower.right{right:20px}
+.roof{position:absolute;top:-38px;left:-7px;width:0;height:0;border-left:31px solid transparent;border-right:31px solid transparent;border-bottom:42px solid #843d35}
+.keep .roof{top:-55px;left:27px;border-left:40px solid transparent;border-right:40px solid transparent;border-bottom:60px solid #79382f}
+.door{position:absolute;bottom:0;left:50%;transform:translateX(-50%);height:53px;width:30px;background:#533626;border-radius:15px 15px 0 0;border:3px solid #e1bd75}
+.window{position:absolute;top:40px;width:15px;height:25px;background:#273f4c;border-radius:8px 8px 0 0;border:2px solid #e6d5a9}
+.w1{left:23px}.w2{right:23px}
+.flag{position:absolute;top:-15px;left:50%;height:30px;width:4px;background:#d7bd7c}
+.flag:after{content:"";position:absolute;left:4px;top:0;width:28px;height:17px;background:#9c3434;clip-path:polygon(0 0,100% 0,80% 50%,100% 100%,0 100%)}
+.path{position:absolute;bottom:-70px;left:50%;transform:translateX(-50%);width:90px;height:130px;background:#b8a17b;clip-path:polygon(25% 0,75% 0,100% 100%,0 100%)}
+.label{position:absolute;bottom:12px;width:100%;font-size:14px;text-shadow:0 2px 3px black}
+.panel{padding:18px;background:#172431}
+button{padding:14px 25px;background:#d6ad60;border:2px solid #f6dda1;border-radius:7px;color:#281b0b;font-size:16px;font-weight:bold}
+#status{margin:12px;color:#ffe0a0}
 </style>
 </head>
 <body>
-<div id="game"></div>
-
-<div id="hud">
- <div class="brand">♛ KINGDOMS OF ETERNITY</div>
- <div class="level">LORD OF DAWN · MAIN CASTLE <span id="topLevel">LEVEL 1</span></div>
- <div class="resources">
-  <div class="resource"><b>🌾 <span id="food">10000</span></b>Food</div>
-  <div class="resource"><b>🪵 <span id="wood">10000</span></b>Wood</div>
-  <div class="resource"><b>🪨 <span id="stone">10000</span></b>Stone</div>
-  <div class="resource"><b>🪙 <span id="gold">5000</span></b>Gold</div>
- </div>
+<header>
+<h1>♛ KINGDOMS OF ETERNITY</h1>
+<div>Lord of Dawn · Main Castle</div>
+</header>
+<div class="resources">
+<div class="resource">🌾<strong>10,000</strong>Food</div>
+<div class="resource">🪵<strong>10,000</strong>Wood</div>
+<div class="resource">🪨<strong>10,000</strong>Stone</div>
+<div class="resource">🪙<strong>5,000</strong>Gold</div>
 </div>
-
-<div id="hint">DRAG TO ROTATE · PINCH TO ZOOM · TAP THE CASTLE</div>
-
-<div id="panel">
- <button id="close" onclick="closePanel()">✕</button>
- <h2>🏰 Main Castle</h2>
- <p id="description">The heart of your kingdom. Upgrade your castle to unlock greater power.</p>
- <p>Castle level: <b id="level">1</b></p>
- <p id="cost">Upgrade cost: 500 Food · 500 Wood</p>
- <button id="upgrade" onclick="upgradeCastle()">⬆ UPGRADE CASTLE</button>
- <div id="message"></div>
+<div class="scene">
+<div class="sun"></div>
+<div class="castle">
+<div class="path"></div>
+<div class="tower left"><div class="roof"></div><div class="window"></div></div>
+<div class="tower right"><div class="roof"></div><div class="window"></div></div>
+<div class="keep">
+<div class="roof"></div>
+<div class="flag"></div>
+<div class="window w1"></div><div class="window w2"></div>
+<div class="door"></div>
 </div>
-
-<script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js';
-import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/controls/OrbitControls.js';
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x91b6c4);
-scene.fog = new THREE.Fog(0x91b6c4,35,90);
-
-const camera = new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,200);
-camera.position.set(12,13,17);
-
-const renderer = new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(innerWidth,innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-renderer.outputColorSpace=THREE.SRGBColorSpace;
-document.getElementById('game').appendChild(renderer.domElement);
-
-const controls=new OrbitControls(camera,renderer.domElement);
-controls.enableDamping=true;
-controls.target.set(0,2,0);
-controls.minDistance=7;
-controls.maxDistance=30;
-controls.maxPolarAngle=Math.PI/2.05;
-
-scene.add(new THREE.HemisphereLight(0xe8f4ff,0x44502c,2));
-
-const sun=new THREE.DirectionalLight(0xffe2b2,3);
-sun.position.set(-10,20,12);
-sun.castShadow=true;
-sun.shadow.mapSize.set(2048,2048);
-scene.add(sun);
-
-function material(color,roughness=0.9){
- return new THREE.MeshStandardMaterial({color,roughness});
+</div>
+<div class="label">YOUR KINGDOM · MAIN CASTLE</div>
+</div>
+<div class="panel">
+<h2>Main Castle — Level <span id="level">1</span></h2>
+<p>Upgrade your castle to strengthen your kingdom.</p>
+<button onclick="upgrade()">⬆ UPGRADE CASTLE</button>
+<div id="status">Next upgrade: 500 Food + 500 Wood</div>
+</div>
+<script>
+let level=1;
+function upgrade(){
+level++;
+document.getElementById('level').textContent=level;
+document.getElementById('status').textContent=
+'Upgrade successful! Castle Level '+level;
 }
-const grass=material(0x496b3c);
-const stone=material(0xaaa99d);
-const darkStone=material(0x626a70);
-const roofMat=material(0x74352e);
-const goldMat=material(0xd6ad55);
-const woodMat=material(0x68452c);
-
-function box(w,h,d,x,y,z,mat,parent=scene){
- const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
- m.position.set(x,y,z);
- m.castShadow=true;
- m.receiveShadow=true;
- parent.add(m);
- return m;
-}
-
-function cylinder(rt,rb,h,x,y,z,mat,parent=scene,segments=8){
- const m=new THREE.Mesh(
-  new THREE.CylinderGeometry(rt,rb,h,segments),mat
- );
- m.position.set(x,y,z);
- m.castShadow=true;
- m.receiveShadow=true;
- parent.add(m);
- return m;
-}
-
-// Ground
-box(200,0.5,200,0,-0.35,0,grass);
-
-// Castle courtyard
-box(14,0.15,12,0,0,0,material(0x8b897c));
-
-// Castle walls
-box(13,2.3,0.7,0,1.2,-5.5,stone);
-box(13,2.3,0.7,0,1.2,5.5,stone);
-box(0.7,2.3,11,6.5,1.2,0,stone);
-box(0.7,2.3,11,-6.5,1.2,0,stone);
-
-// Wall battlements
-for(let i=-5;i<=5;i+=1.3){
- box(0.65,0.55,0.72,i,2.55,-5.5,stone);
- box(0.65,0.55,0.72,i,2.55,5.5,stone);
-}
-for(let i=-4;i<=4;i+=1.3){
- box(0.72,0.55,0.65,6.5,2.55,i,stone);
- box(0.72,0.55,0.65,-6.5,2.55,i,stone);
-}
-
-// Corner towers
-for(const x of [-6.5,6.5]){
- for(const z of [-5.5,5.5]){
-  cylinder(1.05,1.1,3.5,x,1.7,z,darkStone);
-  cylinder(1.12,1.12,0.35,x,3.5,z,goldMat);
-  cylinder(0.95,0.2,2,x,4.65,z,roofMat);
-  cylinder(0.09,0.09,1,x,6.1,z,goldMat);
- }
-}
-
-// Main castle group
-const castle=new THREE.Group();
-scene.add(castle);
-
-// Foundation and keep
-box(5.2,0.65,4.5,0,0.4,0,darkStone,castle);
-box(4.6,3.6,3.9,0,2.45,0,stone,castle);
-
-// Castle upper floor
-box(4.9,0.35,4.2,0,4.35,0,goldMat,castle);
-box(3.7,1.3,3.3,0,5.15,0,stone,castle);
-
-// Tall central tower
-box(1.8,2.3,1.8,0,6.75,0,darkStone,castle);
-cylinder(1.5,0.15,2.1,0,8.95,0,roofMat,castle,4);
-cylinder(0.12,0.12,1.3,0,10.55,0,goldMat,castle);
-
-// Four smaller roof turrets
-for(const x of [-1.65,1.65]){
- for(const z of [-1.4,1.4]){
-  box(0.8,1.1,0.8,x,5.05,z,darkStone,castle);
-  cylinder(0.65,0.08,1.25,x,6.2,z,roofMat,castle,4);
- }
-}
-
-// Main gate
-box(1.65,2.5,0.2,0,1.45,2.02,woodMat,castle);
-box(1.85,0.25,0.3,0,2.8,2.02,goldMat,castle);
-
-// Windows
-for(const z of [-1.98,1.98]){
- for(const x of [-1.3,1.3]){
-  box(0.42,0.8,0.08,x,2.5,z,material(0x263f50),castle);
- }
-}
-
-// Banner
-box(0.08,1.8,0.08,0,7.2,1.1,goldMat,castle);
-box(0.8,0.55,0.08,0.35,7.55,1.1,roofMat,castle);
-
-// Path to gate
-box(2,0.12,8,0,0.08,7,material(0xb8a98b));
-
-// Trees
-const trunkMat=material(0x60422b);
-const leafMat=material(0x31583a);
-for(let i=0;i<24;i++){
- const a=i*2.399;
- const r=11+(i%4)*2;
- const x=Math.cos(a)*r;
- const z=Math.sin(a)*r;
- cylinder(0.18,0.25,1.5,x,0.6,z,trunkMat,scene,7);
- const leaves=new THREE.Mesh(
-  new THREE.ConeGeometry(1.05,2.7,7),leafMat
- );
- leaves.position.set(x,2.35,z);
- leaves.castShadow=true;
- scene.add(leaves);
-}
-
-// Tap detection
-const raycaster=new THREE.Raycaster();
-const pointer=new THREE.Vector2();
-let downX=0,downY=0;
-
-renderer.domElement.addEventListener('pointerdown',e=>{
- downX=e.clientX;
- downY=e.clientY;
-});
-
-renderer.domElement.addEventListener('pointerup',e=>{
- if(Math.hypot(e.clientX-downX,e.clientY-downY)>8)return;
- pointer.x=(e.clientX/innerWidth)*2-1;
- pointer.y=-(e.clientY/innerHeight)*2+1;
- raycaster.setFromCamera(pointer,camera);
- const hits=raycaster.intersectObject(castle,true);
- if(hits.length){
-  document.getElementById('panel').style.display='block';
- }
-});
-
-let castleLevel=1;
-let food=10000;
-let wood=10000;
-let gold=5000;
-
-function updateUI(){
- document.getElementById('level').textContent=castleLevel;
- document.getElementById('topLevel').textContent='LEVEL '+castleLevel;
- document.getElementById('food').textContent=food;
- document.getElementById('wood').textContent=wood;
- document.getElementById('gold').textContent=gold;
-
- const foodCost=castleLevel*500;
- const woodCost=castleLevel*500;
-
- document.getElementById('cost').textContent=
- 'Upgrade cost: '+foodCost+' Food · '+woodCost+' Wood';
-
- document.getElementById('upgrade').textContent=
- castleLevel>=10?'MAXIMUM LEVEL REACHED':'⬆ UPGRADE CASTLE';
-
- document.getElementById('upgrade').disabled=castleLevel>=10;
- document.getElementById('upgrade').style.opacity=
- castleLevel>=10?'0.5':'1';
-}
-
-window.upgradeCastle=function(){
- const fc=castleLevel*500;
- const wc=castleLevel*500;
- const message=document.getElementById('message');
-
- if(castleLevel>=10){
-  message.textContent='Your castle has reached maximum level.';
-  return;
- }
-
- if(food<fc||wood<wc){
-  message.textContent='Not enough resources!';
-  return;
- }
-
- food-=fc;
- wood-=wc;
- castleLevel++;
-
- // Make the castle grow as it levels up
- castle.scale.setScalar(1+(castleLevel-1)*0.045);
-
- message.textContent='Upgrade successful! Your kingdom grows stronger.';
- updateUI();
-};
-
-window.closePanel=function(){
- document.getElementById('panel').style.display='none';
-};
-
-updateUI();
-
-function animate(){
- requestAnimationFrame(animate);
- controls.update();
- renderer.render(scene,camera);
-}
-animate();
-
-window.addEventListener('resize',()=>{
- camera.aspect=innerWidth/innerHeight;
- camera.updateProjectionMatrix();
- renderer.setSize(innerWidth,innerHeight);
-});
 </script>
 </body>
 </html>
