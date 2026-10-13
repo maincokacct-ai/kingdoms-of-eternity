@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kingdoms of Eternity</title>
+
+<style>
+:root {
+  --gold: #e8bd68;
+  --dark: #171c22;
+  --panel: #252d35;
+  --text: #f5eddb;
+  --green: #426b46;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #12171c;
+  color: var(--text);
+  font-family: Georgia, serif;
+}
+
+header {
+  padding: 19px 12px;
+  text-align: center;
+  background: linear-gradient(#394b40, #1d2924);
+  border-bottom: 2px solid var(--gold);
+}
+
+header h1 {
+  margin: 0;
+  color: var(--gold);
+  font-size: 25px;
+}
+
+header p {
+  margin: 7px 0 0;
+  color: #d2d6ca;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+main {
+  max-width: 650px;
+  margin: auto;
+  padding: 12px;
+}
+
+.realm {
+  text-align: center;
+  padding: 12px;
+  background: #20272b;
+  border: 1px solid #53604f;
+  border-radius: 9px;
+}
+
+.realm h2 {
+  margin: 4px 0;
+  color: var(--gold);
+}
+
+.realm p {
+  margin: 7px 0;
+  font-size: 13px;
+  color: #c6cabb;
+}
+
+.resources {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.resource {
+  text-align: center;
+  padding: 11px 2px;
+  background: var(--panel);
+  border: 1px solid #46504d;
+  border-radius: 7px;
+}
+
+.resource .icon {
+  font-size: 23px;
+}
+
+.resource strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--gold);
+  font-size: 14px;
+}
+
+.resource small {
+  font-size: 10px;
+  color: #c8c8bd;
+}
+
+.castle {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 18px 8px 15px;
+  margin: 12px 0;
+  border: 1px solid #8a7951;
+  border-radius: 9px;
+  background:
+    radial-gradient(ellipse at 50% 65%, #637b4a 0%, #354e38 45%, #1e302b 100%);
+}
+
+.castle .sky {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #d9d6b8;
+}
+
+.castle .fortress {
+  font-size: clamp(76px, 23vw, 120px);
+  line-height: 1.35;
+  filter: drop-shadow(0 5px 4px #172019);
+}
+
+.castle h2 {
+  margin: 0;
+  color: #fff0c9;
+}
+
+.castle p {
+  margin: 6px 0;
+  font-size: 12px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 9px;
+  margin-top: 7px;
+  background: #17221d;
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  color: var(--gold);
+  font-size: 12px;
+}
+
+.section-title {
+  color: var(--gold);
+  font-size: 19px;
+  margin: 20px 0 10px;
+}
+
+.buildings {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 9px;
+}
+
+.card {
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid #46504d;
+  border-radius: 8px;
+}
+
+.card .building-icon {
+  font-size: 28px;
+}
+
+.card h3 {
+  margin: 6px 0;
+  font-size: 16px;
+}
+
+.card p {
+  color: #c8cabb;
+  font-size: 12px;
+  line-height: 1.5;
+  min-height: 35px;
+}
+
+.card button, .action-button {
+  width: 100%;
+  border: 1px solid #f1d58c;
+  border-radius: 5px;
+  padding: 10px 5px;
+  background: linear-gradient(#d7ad58, #a87a34);
+  color: #211b10;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+button:active { transform: scale(.98); }
+
+.card button:disabled {
+  background: #555b58;
+  color: #d0d0c5;
+  border-color: #747a73;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.action-button {
+  padding: 13px 5px;
+  font-size: 13px;
+}
+
+.secondary {
+  background: #303c3b;
+  color: #f5eddb;
+  border-color: #718176;
+}
+
+#message {
+  min-height: 44px;
+  padding: 12px;
+  margin-top: 12px;
+  background: #202923;
+  border-left: 3px solid var(--gold);
+  border-radius: 4px;
+  color: #e5d8b8;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+footer {
+  padding: 20px 10px;
+  text-align: center;
+  color: #8d998e;
+  font-size: 11px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>⚔ KINGDOMS OF ETERNITY ⚔</h1>
+  <p>BUILD YOUR LEGACY · RULE YOUR REALM</p>
+</header>
+
+<main>
+  <section class="realm">
+    <h2>The Kingdom of Dawn</h2>
+    <p>A new age begins. Your destiny awaits.</p>
+    <span class="badge" id="rank">Settlement Level 1</span>
+  </section>
+
+  <section class="resources">
+    <div class="resource">
+      <div class="icon">🌲</div>
+      <strong id="wood">500</strong>
+      <small>WOOD</small>
+    </div>
+    <div class="resource">
+      <div class="icon">🌾</div>
+      <strong id="food">500</strong>
+      <small>FOOD</small>
+    </div>
+    <div class="resource">
+      <div class="icon">🪨</div>
+      <strong id="stone">300</strong>
+      <small>STONE</small>
+    </div>
+    <div class="resource">
+      <div class="icon">🪙</div>
+      <strong id="gold">250</strong>
+      <small>GOLD</small>
+    </div>
+  </section>
+
+  <section class="castle">
+    <div class="sky">✦ THE FRONTIER REALM ✦</div>
+    <div class="fortress">🏰</div>
+    <h2>Your Stronghold</h2>
+    <p>Stone walls. Ancient secrets. A rising kingdom.</p>
+    <span class="badge" id="castleLevel">Castle Level 1</span>
+  </section>
+
+  <h2 class="section-title">🏗 Kingdom Buildings</h2>
+
+  <section class="buildings">
+    <article class="card">
+      <div class="building-icon">🏰</div>
+      <h3>Castle</h3>
+      <p id="castleInfo">Level 1 · The heart of your realm.</p>
+      <button onclick="upgrade('castle')"
+        id="castleButton">Upgrade</button>
+    </article>
+
+    <article class="card">
+      <div class="building-icon">🌲</div>
+      <h3>Lumber Mill</h3>
+      <p id="lumberInfo">Level 1 · Produces wood.</p>
+      <button onclick="upgrade('lumber')"
+        id="lumberButton">Upgrade</button>
+    </article>
+
+    <article class="card">
+      <div class="building-icon">🌾</div>
+      <h3>Farm</h3>
+      <p id="farmInfo">Level 1 · Produces food.</p>
+      <button onclick="upgrade('farm')"
+        id="farmButton">Upgrade</button>
+    </article>
+
+    <article class="card">
+      <div class="building-icon">⛏️</div>
+      <h3>Stone Quarry</h3>
+      <p id="quarryInfo">Level 1 · Produces stone.</p>
+      <button onclick="upgrade('quarry')"
+        id="quarryButton">Upgrade</button>
+    </article>
+
+    <article class="card">
+      <div class="building-icon">🏦</div>
+      <h3>Treasury</h3>
+      <p id="treasuryInfo">Level 1 · Generates gold.</p>
+      <button onclick="upgrade('treasury')"
+        id="treasuryButton">Upgrade</button>
+    </article>
+
+    <article class="card">
+      <div class="building-icon">⚔️</div>
+      <h3>Barracks</h3>
+      <p id="barracksInfo">Level 1 · Trains soldiers.</p>
+      <button onclick="upgrade('barracks')"
+        id="barracksButton">Upgrade</button>
+    </article>
+  </section>
+
+  <h2 class="section-title">🛡 Military Command</h2>
+
+  <section class="card">
+    <h3>⚔️ Your Army</h3>
+    <p>Soldiers ready to defend your growing kingdom.</p>
+    <strong>Soldiers: <span id="soldiers">0</span></strong>
+    <div style="height:10px"></div>
+    <button class="action-button" onclick="recruit()">
+      Recruit 10 Soldiers
+    </button>
+  </section>
+
+  <div class="actions">
+    <button class="action-button" onclick="collect()">
+      📦 Collect Resources
+    </button>
+    <button class="action-button secondary" onclick="saveGame()">
+      💾 Save Kingdom
+    </button>
+    <button class="action-button secondary" onclick="showStats()">
+      📜 Kingdom Report
+    </button>
+    <button class="action-button secondary" onclick="resetGame()">
+      🔄 Restart Game
+    </button>
+  </div>
+
+  <div id="message" role="status">
+    Welcome, ruler. Your kingdom awaits your command.
+  </div>
+</main>
+
+<footer>
+  KINGDOMS OF ETERNITY · EARLY DEVELOPMENT BUILD
+</footer>
+
+<script>
+const startingState = {
+  wood: 500,
+  food: 500,
+  stone: 300,
+  gold: 250,
+  soldiers: 0,
+  castle: 1,
+  lumber: 1,
+  farm: 1,
+  quarry: 1,
+  treasury: 1,
+  barracks: 1
+};
+
+let state;
+
+try {
+  const saved = localStorage.getItem("koe-save-v1");
+  state = saved ? { ...startingState, ...JSON.parse(saved) }
+                : { ...startingState };
+} catch (error) {
+  state = { ...startingState };
+}
+
+const names = {
+  castle: "Castle",
+  lumber: "Lumber Mill",
+  farm: "Farm",
+  quarry: "Stone Quarry",
+  treasury: "Treasury",
+  barracks: "Barracks"
+};
+
+function say(text) {
+  document.getElementById("message").textContent = text;
+}
+
+function saveGame() {
+  try {
+    localStorage.setItem("koe-save-v1", JSON.stringify(state));
+    say("Your kingdom has been saved in this browser on this device.");
+  } catch (error) {
+    say("The browser could not save your game. Check its storage settings.");
+  }
+}
+
+function render() {
+  ["wood", "food", "stone", "gold", "soldiers"].forEach(key => {
+    document.getElementById(key).textContent =
+      state[key].toLocaleString();
+  });
+
+  document.getElementById("rank").textContent =
+    "Settlement Level " + state.castle;
+
+  document.getElementById("castleLevel").textContent =
+    "Castle Level " + state.castle;
+
+  for (const key of Object.keys(names)) {
+    const level = state[key];
+    const cost = costs(key);
+    const canAfford = Object.keys(cost).every(
+      resource => state[resource] >= cost[resource]
+    );
+
+    document.getElementById(key + "Info").textContent =
+      "Level " + level + " · " + description(key);
+
+    const button = document.getElementById(key + "Button");
+    button.textContent = level >= 10
+      ? "MAX LEVEL"
+      : "Upgrade · " + cost.wood + "W " + cost.stone + "S";
+
+    button.disabled = level >= 10 || !canAfford;
+  }
+}
+
+function description(key) {
+  const descriptions = {
+    castle: "The heart of your realm.",
+    lumber: "Produces wood each collection.",
+    farm: "Produces food each collection.",
+    quarry: "Produces stone each collection.",
+    treasury: "Generates gold each collection.",
+    barracks: "Improves your military command."
+  };
+  return descriptions[key];
+}
+
+function costs(key) {
+  const level = state[key];
+  return {
+    wood: 100 * level,
+    stone: 50 * level
+  };
+}
+
+function upgrade(key) {
+  if (state[key] >= 10) {
+    say(names[key] + " has reached its maximum level.");
+    return;
+  }
+
+  const cost = costs(key);
+
+  if (state.wood < cost.wood || state.stone < cost.stone) {
+    say("Not enough resources! Collect more wood and stone.");
+    return;
+  }
+
+  state.wood -= cost.wood;
+  state.stone -= cost.stone;
+  state[key]++;
+
+  saveSilently();
+  render();
+
+  say(names[key] + " upgraded to level " + state[key] + "!");
+}
+
+function collect() {
+  const woodGain = state.lumber * 100;
+  const foodGain = state.farm * 100;
+  const stoneGain = state.quarry * 60;
+  const goldGain = state.treasury * 40;
+
+  state.wood += woodGain;
+  state.food += foodGain;
+  state.stone += stoneGain;
+  state.gold += goldGain;
+
+  saveSilently();
+  render();
+
+  say("Resources collected: +" + woodGain + " wood, +" +
+      foodGain + " food, +" + stoneGain + " stone, +" +
+      goldGain + " gold.");
+}
+
+function recruit() {
+  const foodCost = 100;
+  const goldCost = 50;
+
+  if (state.food < foodCost || state.gold < goldCost) {
+    say("You need 100 food and 50 gold to recruit 10 soldiers.");
+    return;
+  }
+
+  state.food -= foodCost;
+  state.gold -= goldCost;
+  state.soldiers += 10;
+
+  saveSilently();
+  render();
+
+  say("Ten soldiers have joined your army. Total: " +
+      state.soldiers + ".");
+}
+
+function showStats() {
+  say("Kingdom Report — Castle Level " + state.castle +
+      ", " + state.soldiers + " soldiers, " +
+      "Lumber Mill Level " + state.lumber +
+      ", Farm Level " + state.farm +
+      ", Quarry Level " + state.quarry +
+      ", Treasury Level " + state.treasury +
+      ", Barracks Level " + state.barracks + ".");
+}
+
+function saveSilently() {
+  try {
+    localStorage.setItem("koe-save-v1", JSON.stringify(state));
+  } catch (error) {
+    // The game can still run if browser storage is unavailable.
+  }
+}
+
+function resetGame() {
+  if (!confirm("Restart your kingdom? This erases its saved progress.")) {
+    return;
+  }
+
+  state = { ...startingState };
+  saveSilently();
+  render();
+  say("A new kingdom has been founded. Your journey begins again.");
+}
+
+render();
+</script>
+
+</body>
+</html>
